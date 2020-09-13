@@ -13,4 +13,9 @@ class BusinessCase extends Model
     {
         $this->belongsTo('App\Models\Program');
     }
+
+    public function notes()
+    {
+        $this->hasMany('App\Models\BusinessCaseNote');
+    }
 }

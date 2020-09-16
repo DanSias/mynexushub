@@ -15,11 +15,17 @@ class Program extends Model
 
     public function partner()
     {
-        $this->belongsTo('App\Models\Partner');
+        return $this->belongsTo('App\Models\Partner');
+    }
+
+    public function requirements()
+    {
+        return $this->hasOne('App\Models\ProgramRequirement');
     }
     
     public function concentrations()
     {
-        $this->hasMany('App\Models\ProgramConcentration');
+        return $this->hasMany('App\Models\ProgramConcentration');
     }
+    
 }

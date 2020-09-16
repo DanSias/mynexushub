@@ -15,7 +15,12 @@ class CreateConversionRatesTable extends Migration
     {
         Schema::create('conversion_rates', function (Blueprint $table) {
             $table->id();
-            $table->foreignKey('program_id');
+            $table->foreignId('program_id');
+            $table->string('channel')->nullable();
+            $table->string('type')->nullable();
+            $table->float('cvrs', 8, 6)->nullable();
+            $table->float('starts', 8, 6)->nullable();
+            $table->integer('leads');
             $table->timestamps();
         });
     }

@@ -15,8 +15,8 @@ class CreateBudgetsTable extends Migration
     {
         Schema::create('budgets', function (Blueprint $table) {
             $table->id();
-            $table->foreignKey('program_id');
-            $table->foreignKey('user_id');
+            $table->foreignId('program_id');
+            $table->foreignId('user_id');
             $table->integer('year');
             $table->string('scenario');
             $table->string('status')->nullable();

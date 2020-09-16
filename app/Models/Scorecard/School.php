@@ -23,7 +23,7 @@ class School extends Model
 
     public function enrollment()
     {
-        return $this->hasMany('App\Models\Scorecard\Enrollment', 'school_id', 'school_id');
+        return $this->hasOne('App\Models\Scorecard\Enrollment', 'school_id', 'school_id');
     }
 
     public function team()

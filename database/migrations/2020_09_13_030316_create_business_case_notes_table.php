@@ -15,6 +15,10 @@ class CreateBusinessCaseNotesTable extends Migration
     {
         Schema::create('business_case_notes', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('business_case_id');
+            $table->foreignId('user_id');
+            $table->string('type')->nullable();
+            $table->text('note')->nullable();
             $table->timestamps();
         });
     }

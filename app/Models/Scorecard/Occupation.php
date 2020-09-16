@@ -22,4 +22,9 @@ class Occupation extends Model
     {
         return $this->hasOne('App\Models\Scorecard\OccupationGrowthRate', 'occupation', 'occupation');
     }
+
+    public function rank()
+    {
+        return $this->hasOne('App\Models\Scorecard\OccupationRank', 'occupation', 'occupation');
+    }
 }

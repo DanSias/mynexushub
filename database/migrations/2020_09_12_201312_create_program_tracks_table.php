@@ -15,7 +15,7 @@ class CreateProgramTracksTable extends Migration
     {
         Schema::create('program_tracks', function (Blueprint $table) {
             $table->id();
-            $table->foreignKey('program_id');
+            $table->foreignId('program_id');
             $table->string('program');
             $table->string('track');
             $table->timestamps();

@@ -15,7 +15,7 @@ class CreateNotesTable extends Migration
     {
         Schema::create('notes', function (Blueprint $table) {
             $table->id();
-            $table->foreignKey('user_id');
+            $table->foreignId('user_id');
             $table->string('key');
             $table->string('value');
             $table->string('channel')->nullable();

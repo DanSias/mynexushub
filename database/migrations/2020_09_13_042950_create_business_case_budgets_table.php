@@ -15,8 +15,8 @@ class CreateBusinessCaseBudgetsTable extends Migration
     {
         Schema::create('business_case_budgets', function (Blueprint $table) {
             $table->id();
-            $table->foreignKey('program_id');
-            $table->foreignKey('user_id');
+            $table->foreignId('program_id');
+            $table->foreignId('user_id');
             $table->integer('year');
             $table->string('status')->nullable();
             $table->string('metric');

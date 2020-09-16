@@ -15,7 +15,7 @@ class CreateInitiativesTable extends Migration
     {
         Schema::create('initiatives', function (Blueprint $table) {
             $table->id();
-            $table->foreignKey('channel_id');
+            $table->foreignId('channel_id');
             $table->string('initiative');
             $table->string('status')->nullable();
             $table->text('description')->nullable();

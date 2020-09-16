@@ -15,8 +15,8 @@ class CreateForecastsTable extends Migration
     {
         Schema::create('forecasts', function (Blueprint $table) {
             $table->id();
-            $table->foreignKey('program_id');
-            $table->foreignKey('user_id');
+            $table->foreignId('program_id');
+            $table->foreignId('user_id');
             $table->integer('year');
             $table->string('month');
             $table->string('type')->nullable();

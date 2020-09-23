@@ -1,5 +1,25 @@
+/*
+object-assign
+(c) Sindre Sorhus
+@license MIT
+*/
+
 /* NProgress, (c) 2013, 2014 Rico Sta. Cruz - http://ricostacruz.com/nprogress
  * @license MIT */
+
+/*!
+ * Quill Editor v1.3.7
+ * https://quilljs.com/
+ * Copyright (c) 2014, Jason Chen
+ * Copyright (c) 2013, salesforce.com
+ */
+
+/*!
+ * The buffer module from node.js, for the browser.
+ *
+ * @author   Feross Aboukhadijeh <http://feross.org>
+ * @license  MIT
+ */
 
 /*!
  * Vue.js v2.6.12
@@ -17,6 +37,8 @@
   * https://github.com/linusborg/portal-vue
   * 
  */
+
+/*! https://mths.be/punycode v1.4.1 by @mathias */
 
 /**
  * @license

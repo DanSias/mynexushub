@@ -9,8 +9,10 @@ class ProgramConcentration extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     public function program()
     {
-        $this->belongsTo('App\Models\Program');
+        return $this->belongsTo('App\Models\Program');
     }
 }

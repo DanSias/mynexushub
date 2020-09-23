@@ -8,7 +8,8 @@
                         <!-- Logo -->
                         <div class="flex-shrink-0 flex items-center">
                             <a href="/dashboard">
-                                <jet-application-mark class="block h-9 w-auto" />
+                                <!-- <jet-application-mark class="block h-9 w-auto" /> -->
+                                <jet-application-logo class="block h-9 w-auto" />
                             </a>
                         </div>
 
@@ -18,10 +19,38 @@
                                 Dashboard
                             </jet-nav-link>
                         </div>
+
+                        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                            <jet-nav-link href="/programs" :active="['programs', 'partners'].includes($page.currentRouteName)">
+                                Attributes
+                            </jet-nav-link>
+                        </div>
                     </div>
 
-                    <!-- Settings Dropdown -->
+                    <!-- Right Side -->
                     <div class="hidden sm:flex sm:items-center sm:ml-6">
+
+                        <!-- Question Mark: Help Modal -->
+                        <span 
+                            class="help cursor-pointer text-gray-400 hover:text-gray-600 mx-1 px-2 py-2 hover:bg-blue-50 rounded-full duration-200" 
+                            aria-label="Get Help for This Page" 
+                            data-balloon-pos="down" 
+                            @click="launchModal('help')"
+                        >
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </span>
+
+                        <!-- Comment: Feedback Modal -->
+                        <span 
+                            class="feedback cursor-pointer text-gray-400 hover:text-gray-600 mx-1 px-2 py-2 hover:bg-blue-50 rounded-full duration-200" 
+                            aria-label="Leave neXus Feedback" 
+                            data-balloon-pos="down" 
+                            @click="launchModal('feedback')"
+                        >
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                        </span>
+
+                        <!-- Avatar: Dropdown Menu -->
                         <div class="ml-3 relative">
                             <jet-dropdown align="right" width="48">
                                 <template #trigger>
@@ -40,9 +69,9 @@
                                         Profile
                                     </jet-dropdown-link>
 
-                                    <jet-dropdown-link href="/user/api-tokens" v-if="$page.jetstream.hasApiFeatures">
+                                    <!-- <jet-dropdown-link href="/user/api-tokens" v-if="$page.jetstream.hasApiFeatures">
                                         API Tokens
-                                    </jet-dropdown-link>
+                                    </jet-dropdown-link> -->
 
                                     <div class="border-t border-gray-100"></div>
 
@@ -197,53 +226,89 @@
         <!-- Modal Portal -->
         <portal-target name="modal" multiple>
         </portal-target>
+
+        <!-- Feedback and Help Modal -->
+        <BaseModal v-if="modalVisible" @close="modalVisible = false" scrollable :title="modalTitle">
+            <div v-if="modalType == 'feedback'">
+                <p class="text-sm leading-5 text-gray-500">
+                    Help us make neXus better by sharing how you think we can improve. You can view and vote for feedback <a href="#">here</a>
+                </p>
+            </div>
+            <div v-else>
+                <p class="text-sm leading-5 text-gray-500">
+                    
+                </p>
+            </div>
+            <template v-slot:footer>
+                <!-- <span class="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
+                    <button
+                        type="button"
+                        class="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-red-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-red-500 focus:outline-none focus:border-red-700 focus:shadow-outline-red transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                    >
+                        Deactivate
+                    </button>
+                </span> -->
+            </template>
+        </BaseModal>
     </div>
 </template>
 
 <script>
-    import JetApplicationLogo from './../Jetstream/ApplicationLogo'
-    import JetApplicationMark from './../Jetstream/ApplicationMark'
-    import JetDropdown from './../Jetstream/Dropdown'
-    import JetDropdownLink from './../Jetstream/DropdownLink'
-    import JetNavLink from './../Jetstream/NavLink'
-    import JetResponsiveNavLink from './../Jetstream/ResponsiveNavLink'
+import JetApplicationLogo from './../Jetstream/ApplicationLogo'
+import JetApplicationMark from './../Jetstream/ApplicationMark'
+import JetDropdown from './../Jetstream/Dropdown'
+import JetDropdownLink from './../Jetstream/DropdownLink'
+import JetNavLink from './../Jetstream/NavLink'
+import JetResponsiveNavLink from './../Jetstream/ResponsiveNavLink'
 
-    export default {
-        components: {
-            JetApplicationLogo,
-            JetApplicationMark,
-            JetDropdown,
-            JetDropdownLink,
-            JetNavLink,
-            JetResponsiveNavLink,
-        },
+import BaseModal from '../Components/BaseModal'
 
-        data() {
-            return {
-                showingNavigationDropdown: false,
-            }
-        },
+export default {
+    components: {
+        JetApplicationLogo,
+        JetApplicationMark,
+        JetDropdown,
+        JetDropdownLink,
+        JetNavLink,
+        JetResponsiveNavLink,
+        BaseModal
+    },
 
-        methods: {
-            switchToTeam(team) {
-                this.$inertia.put('/current-team', {
-                    'team_id': team.id
-                }, {
-                    preserveState: false
-                })
-            },
-
-            logout() {
-                axios.post('/logout').then(response => {
-                    window.location = '/';
-                })
-            },
-        },
-
-        computed: {
-            path() {
-                return window.location.pathname
-            }
+    data() {
+        return {
+            showingNavigationDropdown: false,
+            modalType: '',
+            modalVisible: false,
         }
-    }
+    },
+
+    computed: {
+        path() {
+            return window.location.pathname
+        },
+        modalTitle() {
+            return (this.modalType == 'feedback') ? 'Leave Feedback' : 'About This Page'
+        }
+    },
+
+    methods: {
+        launchModal(type) {
+            this.modalType = type
+            this.modalVisible = true
+        },
+        switchToTeam(team) {
+            this.$inertia.put('/current-team', {
+                'team_id': team.id
+            }, {
+                preserveState: false
+            })
+        },
+
+        logout() {
+            axios.post('/logout').then(response => {
+                window.location = '/';
+            })
+        },
+    },
+}
 </script>

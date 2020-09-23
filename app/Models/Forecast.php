@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Forecast extends Model
 {
     use HasFactory;
+
+    public function program()
+    {
+        return $this->hasOne('App\Models\Program', 'id', 'program_id');
+    }
 }

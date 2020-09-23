@@ -43,4 +43,12 @@ return [
         'client_secret' => env('AZURE_SECRET'),
         'redirect' => env('AZURE_REDIRECT_URI')
     ],
+
+    // Trello
+
+    'trello' => [
+        'client_id' => env('TRELLO_KEY'),
+        'client_secret' => env('TRELLO_SECRET'),
+        'client_token' => env('TRELLO_TOKEN')
+    ],
 ];

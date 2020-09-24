@@ -184,6 +184,17 @@ export default {
             }
             return array;
         },
+
+        // YearMonth digits in a given year
+        yearDigits(year) {
+            let monthDigits = this.monthDigits;
+            let array = [];
+            _.forEach(monthDigits, digit => {
+                let string = String(year) + String(digit);
+                array.push(string);
+            });
+            return array;
+        },
         monthShortText(month) {
             month = parseInt(month);
             let index = month - 1;

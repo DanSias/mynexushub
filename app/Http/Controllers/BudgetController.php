@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\Setting;
+use App\Helpers\Metrics\BudgetesExpected;
 
 class BudgetController extends Controller
 {
@@ -21,5 +22,40 @@ class BudgetController extends Controller
             $value = $setting->value;
             $this->$key = $value;
         }
+    }
+
+    public function index($program = '', $channel = '')
+    {
+        return Inertia::render('Budget', 
+            [
+                'year' => (int) $this->year,
+                'scenario' => $this->scenario, 
+                'status' => $this->status, 
+                'program' => $program,
+                'channel' => $channel
+            ]);
+    }
+
+    public function settings()
+    {
+        return [
+            'year' => $this->year,
+            'scenario' => $this->scenario,
+            'status' => $this->status
+        ];
+    }
+
+
+
+
+    public function expected()
+    {
+        $expected = new BudgetsExpected;
+        return $expected->programChannels();
+    }
+    public function hasForecasts()
+    {
+        $expected = new BudgetsExpected;
+        return $expected->hasForecasts();
     }
 }

@@ -67,8 +67,14 @@ Route::get('/data/programs/concentrations/{program}', [ProgramConcentrationContr
 
 Route::get('/forecast/{program?}/{channel?}', [ForecastController::class, 'index']);
 
+Route::get('/data/forecast/settings', [ForecastController::class, 'settings']);
 Route::get('/data/forecast/expected', [ForecastController::class, 'expected']);
 Route::get('/data/forecast/has-forecast', [ForecastController::class, 'hasForecasts']);
+
+// Budget
+Route::get('/data/budget/settings', [BudgetController::class, 'settings']);
+Route::get('/data/budget/expected', [BudgetController::class, 'expected']);
+Route::get('/data/budget/has-budget', [BudgetController::class, 'hasForecasts']);
 
 // Scorecard
 Route::get('/scorecard', [ScorecardController::class, 'index']);
@@ -127,3 +133,6 @@ Route::get('/data/revenue/program-semester', [DataController::class, 'revenueSem
 Route::get('/data/term-conversion', [DataController::class, 'termConversion']);
 
 Route::get('/data/dates', [DataController::class, 'dates']);
+
+// Admin Settings
+Route::get('/admin', [DataController::class, 'index']);

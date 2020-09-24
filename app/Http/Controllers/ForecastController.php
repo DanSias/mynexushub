@@ -64,6 +64,15 @@ class ForecastController extends Controller
             ]);
     }
 
+    public function settings()
+    {
+        return [
+            'year' => $this->year,
+            'month' => $this->month,
+            'status' => $this->status
+        ];
+    }
+
 
     public function save($program, $channel, Request $request)
     {

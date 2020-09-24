@@ -20,6 +20,8 @@ use App\Helpers\Metrics\Starts;
 use App\Helpers\Metrics\Conversion;
 use App\Helpers\Metrics\Revenue;
 
+use App\Helpers\Metrics\Profitability;
+use App\Helpers\Metrics\ProfitabilityMonthly;
 
 class DataController extends Controller
 {
@@ -148,5 +150,23 @@ class DataController extends Controller
     {
         $time = new Time;
         return $time->dates();
+    }
+
+    // Profitability
+
+    // Profitability Report (current & last years)
+    public function profitability()
+    {
+        $profit = new Profitability;
+        $data = $profit->profitability();
+
+        return json_encode($data);
+    }
+    public function profitabilityMonthly()
+    {
+        $profit = new ProfitabilityMonthly;
+        $data = $profit->profitability();
+
+        return json_encode($data);
     }
 }

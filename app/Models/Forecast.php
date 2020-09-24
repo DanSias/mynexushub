@@ -9,6 +9,8 @@ class Forecast extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     public function program()
     {
         return $this->hasOne('App\Models\Program', 'id', 'program_id');

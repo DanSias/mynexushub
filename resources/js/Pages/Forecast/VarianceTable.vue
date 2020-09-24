@@ -1,46 +1,42 @@
 <template>
-    <div>
-        <table class="uk-table uk-table-striped uk-table-hover uk-table-small uk-table-middle nexus-table uk-margin-remove-top">
+    <div class="w-full p-6">
+        <table class="table-auto w-full">
             <thead>
                 <tr>
                     <th>Program</th>
-                    <th class="uk-text-center">
-                        <font-awesome-icon 
+                    <th class="px-4 py-2 text-center">
+                        <!-- <font-awesome-icon 
                             class="toggle-progress-icon"
                             :icon="(progressType == 'submitted') ? 'check' : 'check-double'" 
                             :class="(progressType == 'submitted') ? 'uk-text-primary' : 'uk-text-success'" 
-                            v-vk-tooltip="(progressType == 'submitted') ? 'Submitted Forecasts' : 'Approved Forecasts'"
+                            :aria-label="(progressType == 'submitted') ? 'Submitted Forecasts' : 'Approved Forecasts'"
                             @click="progressType = (progressType == 'submitted') ? 'approved' : 'submitted'"
-                        />
+                        /> -->
+                        <svg class="text-gray-300 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </th>
-                    <th class="uk-text-center" v-for="(column, i) in dataColumns" :key="i">
+                    <th class="px-4 py-2 text-center capitalize" v-for="(column, i) in dataColumns" :key="i">
                         <span v-html="heading(column)"></span>
                     </th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(program, i) in programs" :key="i">
-                    <td class="program-column">
+                <tr v-for="(program, i) in programs" :key="i" :class="(i%2 == 0) ? 'bg-gray-50' : ''" class="hover:bg-yellow-50">
+                    <td class="program-column border px-4 py-2">
                         <span @click="goHere(program)" class="clickable">{{ program }}</span>
                     </td>
                     <!-- Progress Percent -->
-                    <td class="uk-table-shrink uk-text-right">
-                        <span v-if="progressType == 'submitted'" v-vk-tooltip="(progress.submitted[program]) ? progress.submitted[program].length + ' Channels Submitted' : ''">
+                    <td class="uk-table-shrink text-right border px-4 py-2">
+                        <span v-if="progressType == 'submitted'" data-balloon-pos="right" :aria-label="(progress.submitted[program]) ? progress.submitted[program].length + ' Channels Submitted' : ''">
                             {{ submittedProgress[program] | pct0 }}
                         </span>
-                        <span v-else-if="progressType == 'approved'" v-vk-tooltip="(progress.approved[program]) ? progress.approved[program].length + ' Channels Approved' : ''">
+                        <span v-else-if="progressType == 'approved'" data-balloon-pos="right" :aria-label="(progress.approved[program]) ? progress.approved[program].length + ' Channels Approved' : ''">
                             {{ approvedProgress[program] | pct0 }}
                         </span>
                     </td>
 
-                    <td v-for="(column, j) in dataColumns" :key="j" class="uk-text-right" :class="{'n-a-cell' : cellData(column, program) == 'n/a', 'between-year-month' : column == 'monthCpl'}">
-                            <span v-html="cellData(column, program)"></span>
-                            <vk-drop class="uk-text-left" :delay-hide="100">
-                                <vk-card>
-                                    <span v-html="dropContents(column, program)"></span>
-                                </vk-card>
-                            </vk-drop>
-                        </td>
+                    <td v-for="(column, j) in dataColumns" :key="j" class="border px-4 py-2 text-right" :class="{'n-a-cell' : cellData(column, program) == 'n/a', 'between-year-month' : column == 'monthCpl'}">
+                        <span v-html="cellData(column, program)" :aria-label="dropContents(column, program)" data-balloon-pos="down" data-balloon-break></span>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -48,11 +44,27 @@
 </template>
 
 <script>
+import FormatMetric from '../../Mixins/FormatMetric'
+import DateMixins from '../../Mixins/Dates'
+
 export default {
-    name: 'forecast-variance-table',
+    name: 'ForecastVarianceTable',
+
+    mixins: [
+        FormatMetric,
+        DateMixins
+    ],
 
     props: {
         tableType: {
+            type: String,
+            default: ''
+        },
+        year: {
+            type: Number,
+            default: 0
+        },
+        month: {
             type: String,
             default: ''
         },
@@ -78,7 +90,6 @@ export default {
 
     data() {
         return {
-            settings: {},
             forecast: {},
             profitability: {},
             progressType: 'submitted',
@@ -99,12 +110,6 @@ export default {
     },
 
     computed: {
-        month() {
-            return (this.settings.month) ? this.settings.month : '';
-        },
-        year() {
-            return (this.settings.year) ? this.settings.year : '';
-        },
         range() {
             return this.yearDigits(this.calendarYear);
         },
@@ -146,9 +151,6 @@ export default {
             const router = this.$router;
             router.push('/forecast/' + program);
         },
-        getSettings() {
-            axios.get('/api/forecast/settings').then(({data}) => this.settings = data);
-        },
 
         refreshData() {
             this.getForecast();
@@ -163,7 +165,7 @@ export default {
                 programs: this.programs
             }
             axios
-                .get('/api/forecast/programs', {
+                .get('/data/forecast/programs', {
                     params: {
                         filter
                     }
@@ -183,7 +185,7 @@ export default {
             }
             let range = this.range;
             axios
-                .get('/api/profitability/monthly', {
+                .get('/data/profitability/monthly', {
                     params: {
                         filter,
                         range
@@ -336,19 +338,14 @@ export default {
 
             let string = '';
             string += 'New Forecast: ';
-            string += '<span class="uk-float-right">';
             string += this.formatMetric(newValue, baseMetric);
-            string += '</span><br>';
+            string += '\n';
             string += 'Prior Forecast: ';
-            string += '<span class="uk-float-right">';
             string += this.formatMetric(oldValue, baseMetric);
-            string += '</span>';
             if (budgetValue) {
-                string += '<br>';
+                string += '\n';
                 string += 'Budget: ';
-                string += '<span class="uk-float-right">';
                 string += this.formatMetric(budgetValue, baseMetric);
-                string += '</span>';
             }
             return string
         },
@@ -417,7 +414,6 @@ export default {
     },
 
     mounted() {
-        this.getSettings();
         this.refreshData();
     },
 }

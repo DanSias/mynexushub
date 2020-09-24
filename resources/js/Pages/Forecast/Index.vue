@@ -1,85 +1,87 @@
 <template>
     <!-- Forecast Home -->
-    <div>
-        <div class="container mx-auto">
-            <div class="uk-margin-top uk-margin-bottom">
-                <div slot="header">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="uk-width-expand">
-                            <span v-if="tableType == 'progress'">
-                                Current Forecast Progress
-                                <!-- <font-awesome-icon icon="question-circle" class="uk-margin-left uk-text-muted" />
-                                <div class="uk-width-large" :delay-hide="100">
-                                    <div>
-                                        <p>Forecast progress of all expected channels for each program, based on budget and existing forecast.</p>
-                                        <p>Click on a program to see all channel forecasts for that program, click on the channel to see initiative level inputs for that channel.</p>
-                                        <p><span class="uk-text-primary">Blue Channels</span> have been submitted by the channel owner and are awaiting approval.</p>
-                                        <p><span class="uk-text-success">Green Channels</span> have been approved by the ADMA.</p>
-                                    </div>
-                                </div> -->
-                            </span>
-                            <span v-else>
-                                {{ month }} Forecast vs Previous {{ tableType | ucFirst }}
-                            </span>
-                        </div>
-                        <div>
-                            <div v-if="ready" class="uk-margin uk-grid-small uk-child-width-auto uk-grid uk-text-mute">
-                                <label><input class="uk-radio" type="radio" value="progress" v-model="tableType"> Progress</label>
-                                <label><input class="uk-radio" type="radio" value="variance" v-model="tableType"> Variance</label>
-                                <label><input class="uk-radio" type="radio" value="percent" v-model="tableType"> Percent</label>
-                                <label><input class="uk-radio" type="radio" value="values" v-model="tableType"> Values</label>
-                            </div>
-                        </div>
+    <div class="bg-white mt-8 rounded shadow w-full">
+        <div class="px-6 py-4 flex justify-between border-b border-gray-300">
+            <span v-if="tableType == 'progress'">
+                Current Forecast Progress
+                <!-- <font-awesome-icon icon="question-circle" class="uk-margin-left uk-text-muted" />
+                <div class="uk-width-large" :delay-hide="100">
+                    <div>
+                        <p>Forecast progress of all expected channels for each program, based on budget and existing forecast.</p>
+                        <p>Click on a program to see all channel forecasts for that program, click on the channel to see initiative level inputs for that channel.</p>
+                        <p><span class="uk-text-primary">Blue Channels</span> have been submitted by the channel owner and are awaiting approval.</p>
+                        <p><span class="uk-text-success">Green Channels</span> have been approved by the ADMA.</p>
+                    </div>
+                </div> -->
+            </span>
+            <span v-else class="capitalize">
+                {{ month }} Forecast vs Previous {{ tableType }}
+            </span>
+
+            <div>
+                <div class="flex">
+                    <div v-for="(type, i) in ['progress', 'variance', 'percent', 'values']" :key="i">
+                        <span 
+                            class="capitalize ml-4 cursor-pointer" 
+                            :class="(tableType == type) ? 'bg-blue-500 text-white rounded-full py-1 px-4' : 'text-gray-800 hover:text-blue-500' "
+                            @click="tableType = type"
+                        >
+                            {{ type }}
+                        </span>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <variance-table 
-                    v-if="ready && tableType != 'progress'"
-                    :tableType="tableType"
-                    :programs="filteredProgramsList"
-                    :expected="expected"
-                    :progress="forecasts"
-                />
-
-                <table v-show="tableType == 'progress'" class="uk-table uk-table-striped uk-table-hover uk-table-small uk-table-middle nexus-table uk-margin-remove-top">
-                    <thead>
-                        <tr>
-                            <th>Program</th>
-                            <th>Channels</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(program, i) in filteredProgramsList" :key="i">
-                            <td class="program-column">
-                                <span @click="goHere(program, '')" class="clickable">{{ program }}</span>
-                                <div position="right-center">
-                                    <div >
-                                        Submitted: <span class="uk-float-right">{{ submittedPercent[program]  | pct0 }}</span><br>
-                                        Approved: <span class="uk-float-right">{{ approvedPercent[program]  | pct0 }}</span>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <span v-if="[program]">
-                                    <span v-for="(channel, j) in programChannels(program)" :key="j" @click="goHere(program, channel)">
-                                        <span class="clickable" :class="hasForecast(program, channel)">
+        <variance-table 
+            v-if="ready && tableType != 'progress'"
+            :tableType="tableType"
+            :programs="filter.programs"
+            :expected="expected"
+            :progress="forecasts"
+            :year="year"
+            :month="month"
+        />
+        <div class="p-6">
+            <table v-show="tableType == 'progress'" class="w-full table-auto">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2 w-56">Program</th>
+                        <th class="px-4 py-2">Channels</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(program, i) in filter.programs" :key="i" class="hover:bg-yellow-50" :class="(i%2 == 0) ? 'bg-gray-50' : ''">
+                        <td class="program-column border px-4 py-2">
+                            <!-- Program -->
+                            <inertia-link :href="`/forecast/${program}`">
+                                <span class="text-gray-800 font-semibold" @click="goHere(program, '')" :aria-label="`Submitted: ${submittedPercent[program]} | Approved: ${approvedPercent[program]}`" data-balloon-pos="right">
+                                    {{ program }}
+                                </span>
+                            </inertia-link>
+                        </td>
+                        <td class="border px-4 py-2">
+                            <span v-if="[program]">
+                                <span v-for="(channel, j) in programChannels(program)" :key="j" @click="goHere(program, channel)">
+                                    <inertia-link :href="`/forecast/${program}/${channel}`">
+                                        <span :class="(hasForecast(program, channel)) ? hasForecast(program, channel) : 'text-gray-500 hover:text-gray-700'">
                                             {{ channel }}
                                         </span>
-                                        <!-- Separate with pipe -->
-                                        <span v-if="j != Object.keys(programChannels(program)).length - 1" class="uk-margin-left uk-margin-right uk-text-muted"> | </span>
-                                    </span>
+                                    </inertia-link>
+                                    <!-- Separate with pipe -->
+                                    <span v-if="j != Object.keys(programChannels(program)).length - 1" class="text-gray-300 ml-2 mr-2"> | </span>
                                 </span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </template>
 
 <script>
-import VarianceTable from './VarianceTable';
+import VarianceTable from './VarianceTable'
 
 export default {
     name: 'ForecastIndex',
@@ -129,9 +131,6 @@ export default {
     },
 
     computed: {
-        filteredProgramsList() {
-            return ['ABC-XZY', 'DNA-BOB']
-        },
         expectedWithForecasts() {
             let expected = this.expected;
             let submitted = this.forecasts.submitted;
@@ -166,7 +165,7 @@ export default {
             let expected = 0;
             let submitted = 0;
             if (! _.isEmpty(this.forecasts)) {
-                _.forEach(this.filteredProgramsList, p => {
+                _.forEach(this.filter.programs, p => {
                     if (! _.isEmpty(this.forecasts.submitted[p]) && ! _.isEmpty(this.expected[p])) {
                         progress[p] = (this.expected[p].length > 0) ? this.forecasts.submitted[p].length / this.expected[p].length : 0;
                         expected += this.expected[p].length;
@@ -189,7 +188,7 @@ export default {
             let expected = 0;
             let approved = 0;
             if (! _.isEmpty(this.forecasts)) {
-                _.forEach(this.filteredProgramsList, p => {
+                _.forEach(this.filter.programs, p => {
                     if (! _.isEmpty(this.forecasts.approved[p]) && ! _.isEmpty(this.expected[p])) {
                         progress[p] = (this.expected[p].length > 0) ? this.forecasts.approved[p].length / this.expected[p].length : 0;
                         expected += this.expected[p].length;
@@ -223,15 +222,15 @@ export default {
         hasForecast(program, channel) {
             if (this.forecasts && this.forecasts.approved && this.forecasts.approved[program]) {
                 if (this.forecasts.approved[program].includes(channel)) {
-                    return 'uk-text-success';
+                    return 'text-green-500';
                 }           
             }
             if (this.forecasts && this.forecasts.submitted && this.forecasts.submitted[program]) {
                 if (this.forecasts.submitted[program].includes(channel)) {
-                    return 'uk-text-primary';
+                    return 'text-blue-500';
                 }
             }
-            return 'uk-text-muted';
+            return '';
         },
         goHere(program, channel) {
             const router = this.$router;

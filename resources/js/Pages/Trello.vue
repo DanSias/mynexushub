@@ -31,12 +31,12 @@
             <div class="grid grid-cols-2 gap-5">
                 <div v-for="(board, i) in boards" :key="i">
                     <div class="bg-white p-8 flex cursor-pointer shadow-sm hover:shadow" @click="setBoard(board)">
-                        <div>
+                        <div class="">
                             <img :src="boardImage(board)" class="h-20 w-20 rounded-full">
                         </div>
                         <div>
-                            <div class="ml-6 text-xl mt-1 mb-auto">{{ board.name}}</div>
-                            <div class="ml-6 text-sm text-gray-400">{{ board.desc}}</div>
+                            <h2 class="ml-6 text-xl mt-1 mb-auto">{{ board.name}}</h2>
+                            <p class="ml-6 text-sm text-gray-400 truncate">{{ board.desc.substring(0, 70) }}</p>
                         </div>
                     </div>
                 </div>
@@ -54,12 +54,12 @@
                         </div>
                     </div>
                     <div v-for="(card, j) in cardListIds[list.id]" :key="j" class="my-4 bg-white hover:bg-gray-50 rounded shadow-sm hover:shadow cursor-pointer" @click="setCard(card, list)">
-                        <p class="text-center text-semibold py-2 border-b border-gray-200 text-gray-700" >
+                        <p class="text-left text-sm text-semibold py-3 px-4 border-b border-gray-200 text-gray-700" >
                             {{ card.name }}
                         </p>
-                        <p class="text-sm py-4 px-4 text-gray-500">
+                        <!-- <p class="text-sm py-4 px-4 text-gray-500">
                             <markdown-it-vue-light class="prose" :content="card.desc" />
-                        </p>
+                        </p> -->
                     </div>
                 </div>
             </div>

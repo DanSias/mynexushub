@@ -8,7 +8,7 @@ use App\Helpers\Range;
 use App\Helpers\Filter;
 use App\Helpers\Metrics\Utilities;
 
-use App\CVRS;
+use App\Models\CVRS;
 
 // Performance Metrics
 class ProfitabilityMonthly
@@ -97,7 +97,7 @@ class ProfitabilityMonthly
                 ->groupBy('channel')
                 ->groupBy('program');
             
-            if (count($this->filter->channel) > 0) {
+            if ($this->filter->channel && count($this->filter->channel) > 0) {
                 $query[$type] = $query[$type]->whereIn('channel', $this->filter->channel);
             }
 
@@ -187,14 +187,14 @@ class ProfitabilityMonthly
 
                 // Organize by group
                 $key = $q->$arrayGroup;
-                $subkey = $q->$arraySubgroup;
+                $subkey = ($arraySubgroup) ? $q->$arraySubgroup : '';
 
                 // Create empty element if key is missing
                 if (! array_key_exists($key, $array)) {
                     $array[$key] = $this->base($key);
                 }
                 foreach ($this->months as $mo) {
-                    if ($q->$mo > 0) {
+                    if (property_exists($q, $mo) && $q->$mo > 0) {
                         $array[$key]->$metric[$mo] += $q->$mo;
                     }
                 }
@@ -207,7 +207,7 @@ class ProfitabilityMonthly
                         unset($array[$key]->$arraySubgroup[$subkey]->$arraySubgroup);
                     }
                     foreach ($this->months as $mo) {
-                        if ($q->$mo > 0) {
+                        if (property_exists($q, $mo) && $q->$mo > 0) {
                             $array[$key]->$arraySubgroup[$subkey]->$metric[$mo] += $q->$mo;
                         }
                     }
@@ -218,16 +218,16 @@ class ProfitabilityMonthly
         // Conversion Rates        
         if (! empty($arraySubgroup)) {
             $cvrs = $this->cvrs();
-            foreach ($cvrs as $cvrsGroupKey => $cvrsSubkeys) {
-                foreach ($cvrsSubkeys as $cvrsSubkey => $value) {
-                    // Check that key exists before adding
-                    if (array_key_exists($cvrsGroupKey, $array)) {
-                        $array[$cvrsGroupKey]->$arraySubgroup[$cvrsSubkey]->cvrs = $value;
-                        // Subgroup LTV
-                        $array[$cvrsGroupKey]->$arraySubgroup[$cvrsSubkey]->ltv = $this->ltv[$cvrsSubkey];
-                    }
-                }
-            }
+            // foreach ($cvrs as $cvrsGroupKey => $cvrsSubkeys) {
+            //     foreach ($cvrsSubkeys as $cvrsSubkey => $value) {
+            //         // Check that key exists before adding
+            //         if (array_key_exists($cvrsGroupKey, $array)) {
+            //             $array[$cvrsGroupKey]->$arraySubgroup[$cvrsSubkey]->cvrs = $value;
+            //             // Subgroup LTV
+            //             $array[$cvrsGroupKey]->$arraySubgroup[$cvrsSubkey]->ltv = $this->ltv[$cvrsSubkey];
+            //         }
+            //     }
+            // }
         } else {
             $cvrsTotals = $this->cvrsTotals();
             foreach ($cvrsTotals as $key => $value) {
@@ -368,7 +368,7 @@ class ProfitabilityMonthly
             ->where('cvrs', '>', 0)
             ->whereIn('program', $this->filter->programsList());
 
-        if (count($this->filter->channel) > 0) {
+        if ($this->filter->channel && count($this->filter->channel) > 0) {
             $cvrs = $cvrs->whereIn('channel', $this->filter->channel);
         }
 

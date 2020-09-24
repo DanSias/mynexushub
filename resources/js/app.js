@@ -15,7 +15,7 @@ Vue.use(VueMeta)
 // Custom Text Filters
 Vue.filter('commas', function (value) {
     if (!value) return ''
-    return value.toLocaleString()
+    return Math.round(value).toLocaleString()
 })
 // Abbreaviate Large Numbers
 Vue.filter('bigCommas', function (number) {

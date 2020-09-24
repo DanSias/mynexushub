@@ -23,6 +23,15 @@ use App\Helpers\Metrics\Revenue;
 
 class DataController extends Controller
 {
+    public function index($type = '')
+    {
+        return Inertia::render('Admin', 
+            [
+                'type' => $type,
+                'currentUser' => auth()->user()
+            ]);
+    }
+    
     // Inertia Pages
     public function metrics($key = '')
     {

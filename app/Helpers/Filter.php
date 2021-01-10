@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Models\Deadline;
+use App\Models\Partner;
 use App\Models\Program;
 use App\Models\ProgramMap;
 
@@ -102,7 +103,12 @@ class Filter
                         $array = [$array];
                     }
                 }
-                $query = $query->whereIn($attribute, $array);
+                if ($attribute == 'partner') {
+                    $partnerId = Partner::whereIn('code', $this->partner)->pluck('id')->toArray();
+                    $query = $query->whereIn('partner_id', $partnerId);
+                } else {
+                    $query = $query->whereIn($attribute, $array);
+                }
             }
         }
 

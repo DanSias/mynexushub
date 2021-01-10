@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Classes\Metrics;
+namespace App\Helpers\Metrics;
 
 use DB;
-use App\Classes\Time;
-use App\Classes\Range;
-use App\Classes\Filter;
+use App\Helpers\Time;
+use App\Helpers\Range;
+use App\Helpers\Filter;
 
-use App\Classes\Metrics\Utilities;
+use App\Helpers\Metrics\Utilities;
 
 // Lead Tracker
 class Tracker

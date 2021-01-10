@@ -25,6 +25,18 @@
                                 Attributes
                             </jet-nav-link>
                         </div>
+
+                        <div v-if="inputStatus.forecast && inputStatus.forecast == 'open'" class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                            <jet-nav-link href="/forecast" :active="path.includes('forecast')">
+                                Forecast
+                            </jet-nav-link>
+                        </div>
+
+                        <div v-if="inputStatus.budget && inputStatus.budget == 'open'" class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                            <jet-nav-link href="/budget" :active="path.includes('budget')">
+                                Budget
+                            </jet-nav-link>
+                        </div>
                     </div>
 
                     <!-- Right Side -->
@@ -279,6 +291,7 @@ export default {
             showingNavigationDropdown: false,
             modalType: '',
             modalVisible: false,
+            inputStatus: {}
         }
     },
 
@@ -303,12 +316,21 @@ export default {
                 preserveState: false
             })
         },
+        getInputStatus() {
+            axios
+                .get('/data/inputs/status')
+                .then(({data}) => this.inputStatus = data)
+        },
 
         logout() {
             axios.post('/logout').then(response => {
-                window.location = '/';
+                window.location = '/'
             })
         },
+    },
+
+    mounted() {
+        this.getInputStatus()
     },
 }
 </script>

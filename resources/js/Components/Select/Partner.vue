@@ -2,8 +2,6 @@
     <multiselect class="search-box" 
         :value="value"
         :options="options" 
-        track-by="id"
-        label="code"
         @input="update"
         :multiple="multiple"
         :close-on-select="true"
@@ -34,6 +32,10 @@ export default {
         placeholder: {
             type: String,
             default: 'Academic Partner'
+        },
+        filter: {
+            type: Object,
+            default: () => {}
         }
     },
     
@@ -43,14 +45,36 @@ export default {
         }
     },
 
+    computed: {
+        location() {
+            return (this.filter.location) ? this.filter.location : ''
+        },
+        bu() {
+            return (this.filter.bu) ? this.filter.bu : ''
+        }
+    },
+
     methods: {
         update(value) {
             this.$emit('input', value)
         },
         getOptions() {
             axios
-                .get('/data/programs/list/partner')
+                .get('/data/programs/list/partner', {
+                    params: {
+                        filter: this.filter
+                    }
+                })
                 .then(({data}) => this.options = data)
+        }
+    },
+
+    watch: {
+        location() {
+            this.getOptions()
+        },
+        bu() {
+            this.getOptions()
         }
     },
 

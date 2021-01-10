@@ -1,7 +1,11 @@
 <x-guest-layout>
     <x-jet-authentication-card>
         <x-slot name="logo">
-            <x-jet-authentication-card-logo />
+            {{-- <x-jet-authentication-card-logo /> --}}
+
+            <span class="text-6xl nexus-blue nexus-font -mt-3 font-extrabold" style="font-family: 'Orbitron', sans-serif;">
+                ne<span class="the-x text-gray-800">X</span>us
+            </span>
         </x-slot>
 
         <x-jet-validation-errors class="mb-4" />
@@ -11,10 +15,35 @@
                 {{ session('status') }}
             </div>
         @endif
+        
+        <div class="border-b border-gray-200">
+            <p class="text-center mt-3 mb-5 text-gray-600 font-semibold">Sign in with</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 mb-4 py-4 px-6">
+            <div class="w-full">
+                <form action="/login/microsoft">
+                    <button class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white w-full rounded-md">
+                        <ion-icon class="mr-1" name="logo-windows"></ion-icon>
+                        Microsoft
+                    </button>
+                </form>
+            </div>
+            <div class="w-full">
+                <form action="/login/google">
+                    <button class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white w-full rounded-md">
+                        <ion-icon class="mr-1" name="logo-google"></ion-icon>
+                        Google
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="text-gray-500 text-center mb-3 font-bold">
+            <p class="text-sm">Or sign in with credentials</p>
+        </div>
 
         <form method="POST" action="{{ route('login') }}">
             @csrf
-
             <div>
                 <x-jet-label value="Email" />
                 <x-jet-input class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
@@ -34,6 +63,9 @@
 
             <div class="flex items-center justify-end mt-4">
                 @if (Route::has('password.request'))
+                    <a class="underline text-sm text-gray-600 hover:text-gray-900 mr-8" href="/register">
+                        Register
+                    </a>
                     <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('password.request') }}">
                         {{ __('Forgot your password?') }}
                     </a>

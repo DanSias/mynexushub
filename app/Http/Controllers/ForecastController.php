@@ -41,26 +41,29 @@ class ForecastController extends Controller
         $filter = new Filter;
         $filter->group = 'code';
         $filter->active = ['TRUE'];
-        if ($role->location) {
-            $filter->location = json_decode($role->location);
-        }
-        if ($role->bu) {
-            $filter->bu = json_decode($role->bu);
-        }
-        if ($role->channel) {
-            $filter->channel = json_decode($role->channel);
+        if ($role) {
+            if ($role->location) {
+                $filter->location = json_decode($role->location);
+            }
+            if ($role->bu) {
+                $filter->bu = json_decode($role->bu);
+            }
+            if ($role->channel) {
+                $filter->channel = json_decode($role->channel);
+            }
         }
         $filter->keys = $filter->keys();
         $filter->programs = $filter->programsList();
 
         return Inertia::render('Forecast', 
             [
-                'filter' => $filter,
+                'requestFilter' => $filter,
                 'year' => (int) $this->year,
                 'month' => $this->month, 
                 'status' => $this->status, 
                 'program' => $program,
-                'channel' => $channel
+                'channel' => $channel,
+                'role' => $role
             ]);
     }
 
@@ -74,7 +77,7 @@ class ForecastController extends Controller
     }
 
 
-    public function save($program, $channel, Request $request)
+    public function store($program, $channel, Request $request)
     {
         if ($this->status == 'closed') {
             return 'closed';
@@ -132,12 +135,79 @@ class ForecastController extends Controller
         $check['channel'] = $array['channel'];
         $check['initiative'] = $array['initiative'];
         $check['month'] = $array['month'];
+        unset($array['program']);
 
         $update = Forecast::updateOrCreate($check, $array);
         return $update;
     }
 
+    // Save Settings
+    public function saveSettings(Request $request)
+    {
+        $type = 'forecast';
+        $settings = $request->input('settings');
+        $returnArray = [];
 
+        $user = Auth::user();
+        $id = $user->id;
+
+        foreach ($settings as $key => $value) {
+            $array = [];
+            $array['type'] = $type;
+            $array['key'] = $key;
+            $array['value'] = $value;
+            $array['user_id'] = $id;
+
+            $check['type'] = $type;
+            $check['key'] = $key;
+            $save = Setting::updateOrCreate($check, $array);
+            // array_push($returnArray, $save);
+        }
+        $current = Setting::where('type', 'forecast')->get();
+        return $current;
+    }
+
+
+    public function approve($program, $channel)
+    {
+        $user = Auth::user();
+        $id = $user->id;
+        $now = Carbon::now()->toDateTimeString();
+        $programId = Program::where('code', $program)->pluck('id')->first();
+
+        $approve = Forecast::where('year', $this->year)
+            ->where('month', $this->month)
+            ->where('program_id', $programId)
+            ->where('channel', $channel)
+            ->update(['approver_id' => $id, 'approved_at' => $now]);
+        
+        return $approve;
+    }
+    public function approveProgram($program)
+    {
+        $user = Auth::user();
+        $id = $user->id;
+        $now = Carbon::now()->toDateTimeString();
+        $programId = Program::where('code', $program)->pluck('id')->first();
+
+        $approve = Forecast::where('year', $this->year)
+            ->where('month', $this->month)
+            ->where('program_id', $programId)
+            ->update(['approver_id' => $id, 'approved_at' => $now]);
+        
+        return $approve;
+    }
+    public function disapprove($program, $channel)
+    {
+        $programId = Program::where('code', $program)->pluck('id')->first();
+        $disapprove = Forecast::where('year', $this->year)
+            ->where('month', $this->month)
+            ->where('program_id', $programId)
+            ->where('channel', $channel)
+            ->update(['approver_id' => null, 'approved_at' => null]);
+        
+        return $disapprove;
+    }
 
     public function expected()
     {

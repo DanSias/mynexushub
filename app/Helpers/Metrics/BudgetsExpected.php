@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Classes\Metrics;
+namespace App\Helpers\Metrics;
 
 use DB;
-use App\Classes\Time;
-use App\Classes\Filter;
-use App\Classes\Metrics\Utilities;
+use App\Helpers\Time;
+use App\Helpers\Filter;
+use App\Helpers\Metrics\Utilities;
 
 use App\Setting;
 use App\Forecast;

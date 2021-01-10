@@ -1,7 +1,10 @@
 <x-guest-layout>
     <x-jet-authentication-card>
         <x-slot name="logo">
-            <x-jet-authentication-card-logo />
+            {{-- <x-jet-authentication-card-logo /> --}}
+            <span class="text-6xl nexus-blue nexus-font -mt-3 font-extrabold" style="font-family: 'Orbitron', sans-serif;">
+                ne<span class="the-x text-gray-800">X</span>us
+            </span>
         </x-slot>
 
         <x-jet-validation-errors class="mb-4" />

@@ -84,9 +84,9 @@ class ProgramController extends Controller
     // Lists for filter select options
     public function buList()
     {
-        $active = request()->active ?? ['TRUE', 'PENDING'];
+        $filter = new Filter;
 
-        return Program::whereIn('active', $active)
+        return Program::whereIn('code', $filter->programsList())
             ->whereNotNull('bu')
             ->where('bu', '>', 0)
             ->orderBy('bu', 'asc')
@@ -94,6 +94,13 @@ class ProgramController extends Controller
             ->pluck('bu')
             ->toArray();
     }
+
+    public function codeList()
+    {
+        $filter = new Filter;
+        return $filter->programsList();
+    }
+    
     public function typeList()
     {
         $active = request()->active ?? ['TRUE', 'PENDING'];
@@ -109,9 +116,9 @@ class ProgramController extends Controller
 
     public function partnerList()
     {
-        $active = request()->active ?? ['TRUE', 'PENDING'];
+        $filter = new Filter;
 
-        $id = Program::whereIn('active', $active)
+        $id = Program::whereIn('code', $filter->programsList())
             ->whereNotNull('partner_id')
             ->distinct()
             ->pluck('partner_id')
@@ -119,7 +126,8 @@ class ProgramController extends Controller
         
         return Partner::whereIn('id', $id)
             ->orderBy('code', 'asc')
-            ->get(['id', 'code']);
+            ->pluck('code')
+            ->toArray();
     }
 
     public function verticalList()

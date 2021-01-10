@@ -28,16 +28,19 @@
 
         <!-- Score Details -->
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="grid grid-cols-3 gap-4">
+            <div class="flex justify-between -mx-4">
                 <DegreeScore 
+                    class="w-1/3 mx-4"
                     :level="selected.level"
                     :degree="selected.degree"
                     :school="selected.school"
                 />
                 <OccupationScore 
+                    class="w-1/3 mx-4"
                     :occupation="selected.occupation"
                 />
                 <SchoolScore 
+                    class="w-1/3 mx-4"
                     :school="selected.school"
                 />
             </div>

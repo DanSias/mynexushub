@@ -9,14 +9,14 @@
                             <!-- <font-awesome-icon :icon="icon(metric)" class="uk-margin-small-right" /> -->
                             {{ heading(metric) }}
                         </span>
-                        <h1 class="text-4xl nexus-blue">
+                        <h1 class="text-4xl" :class="(totals[metric] != 0) ? 'nexus-blue' : 'text-gray-400'">
                             {{ prefix(metric) }}{{ totals[metric] | commas}}
                         </h1>
                         <p class="text-gray-600" @click="comparePercent = ! comparePercent">
-                            <span v-if="comparePercent" data-balloon-pos="right" :aria-label="'Budget: ' + prefix(metric) + parseInt(budgetTotals[metric]).toLocaleString()">
+                            <span v-if="comparePercent" data-balloon-pos="right" :aria-label="'Budget: ' + prefix(metric) + parseInt(forecastTotals[metric]).toLocaleString()">
                                 {{ percentVariance(metric) | pct0 }}
                             </span>
-                            <span v-else data-balloon-pos="right" :aria-label="'Budget: ' + prefix(metric) + parseInt(budgetTotals[metric]).toLocaleString()">
+                            <span v-else data-balloon-pos="right" :aria-label="'Budget: ' + prefix(metric) + parseInt(forecastTotals[metric]).toLocaleString()">
                                 {{ varianceText(metric) }}
                             </span>
                                 to Budget
@@ -40,10 +40,10 @@
                             {{ prefix(metric) }}{{ totals[metric] | commas}}
                         </h1>
                         <p class="text-gray-600" @click="comparePercent = ! comparePercent" >
-                            <span v-if="comparePercent" data-balloon-pos="right" :aria-label="'Budget: ' + prefix(metric) + parseInt(budgetTotals[metric]).toLocaleString()">
+                            <span v-if="comparePercent" data-balloon-pos="right" :aria-label="'Budget: ' + prefix(metric) + parseInt(forecastTotals[metric]).toLocaleString()">
                                 {{ percentVariance(metric) | pct0 }}
                             </span>
-                            <span v-else data-balloon-pos="right" :aria-label="'Budget: ' + prefix(metric) + parseInt(budgetTotals[metric]).toLocaleString()">
+                            <span v-else data-balloon-pos="right" :aria-label="'Budget: ' + prefix(metric) + parseInt(forecastTotals[metric]).toLocaleString()">
                                 {{ varianceText(metric) }}
                             </span>
                             to Budget
@@ -67,7 +67,7 @@ export default {
                 return {};
             }
         },
-        budgetTotals: {
+        forecastTotals: {
             type: Object,
             default: function () {
                 return {};
@@ -122,7 +122,7 @@ export default {
             }
         },
         variance(metric) {
-            return parseInt(this.totals[metric] - this.budgetTotals[metric]);
+            return parseInt(this.totals[metric] - this.forecastTotals[metric]);
         },
         varianceText(metric) {
             let delta = this.variance(metric);
@@ -139,7 +139,7 @@ export default {
         },
         percentVariance(metric) {
             let delta = this.variance(metric);
-            return (this.budgetTotals[metric] > 0) ? delta / this.budgetTotals[metric] : 0;
+            return (this.forecastTotals[metric] > 0) ? delta / this.forecastTotals[metric] : 0;
         },
         varianceIcon(metric) {
             return (this.variance(metric) > 0) ? 'caret-up' : 'caret-down';

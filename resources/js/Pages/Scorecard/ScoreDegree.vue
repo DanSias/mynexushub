@@ -1,22 +1,29 @@
 <template>
     <div>
-        <div class="bg-white rounded shadow hover:shadow-md cursor-pointer" @click="showFullScore = ! showFullScore">
+        <div class="bg-white rounded shadow hover:shadow-md duration-200 cursor-pointer h-48" @click="showFullScore = ! showFullScore" v-show="degree">
             <div class="grid grid-cols-3 px-6 py-4 text-center">
                 <div class="flex flex-col items-center border-r border-gray-100">
                     <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 14l9-5-9-5-9 5 9 5z"></path><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"></path></svg>
-                    <p v-if="latestConferrals" class="text-lg">
-                        {{ latestConferrals | commas }}
+                    <p class="mt-3 mb-1 text-2xl text-gray-800">
+                        <span v-if="latestConferrals">{{ latestConferrals | commas }}</span>
+                        <span v-else>&nbsp;</span>
                     </p>
                     <span class="text-gray-500 text-sm mx-2">Conferrals {{ latestConferralYear }}</span>
                 </div>
                 <div class="flex flex-col items-center border-r border-gray-100">
                     <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
-                    <p v-if="latestCAGR">{{ latestCAGR | pct1 }}</p>
+                    <p class="mt-3 mb-1 text-2xl text-gray-800">
+                        <span v-if="latestCAGR">{{ latestCAGR | pct1 }}</span>
+                        <span v-else>&nbsp;</span>
+                    </p>
                     <span class="text-gray-500 text-sm mx-2">5 Year CAGR</span>
                 </div>
                 <div class="flex flex-col items-center">
                     <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16l2.879-2.879m0 0a3 3 0 104.243-4.242 3 3 0 00-4.243 4.242zM21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <p v-if="searchVolume">{{ searchVolume | commas }}</p>
+                    <p class="mt-3 mb-1 text-2xl text-gray-800">
+                        <span v-if="searchVolume">{{ searchVolume | commas }}</span>
+                        <span v-else>&nbsp;</span>
+                    </p>
                     <span class="text-gray-500 text-sm mx-2">Monthly Search Volume</span>
                 </div>
             </div>

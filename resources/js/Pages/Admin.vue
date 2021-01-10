@@ -40,11 +40,11 @@
 
             <!-- <admin-merge class="uk-margin-top" /> -->
 
-            <h2 class="my-6 text-xl text-bold">Forecast &amp; Budget Inputs</h2>
-            <div class="grid grid-cols-2 gap-6">
+            <h2 class="mt-8 text-2xl text-bold">Forecast &amp; Budget Inputs</h2>
+            <div class="grid grid-cols-2 gap-6 mt-4">
                 <!-- Forecast -->
-                <div class="bg-white rounded shadow w-full mt-6">
-                    <div class="border-b border-gray-300 px-6 py-4 text-semibold flex justify-between">
+                <div class="bg-white rounded shadow w-full">
+                    <div class="border-b px-6 py-4 text-semibold flex justify-between" :class="(forecastSettings.status == 'open') ? 'border-green-400' : 'border-gray-300'">
                         Forecast Status
                         <span v-if="forecastSettings.status == 'open'" class="text-green-500" data-balloon-pos="left" aria-label="Forecast Inputs are Open">
                             <svg class="check-circle w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
@@ -59,8 +59,8 @@
                             <strong>Month: </strong> <span class="capitalize">{{ forecastSettings.month }}</span>
                         </div>
                         <div>
-                            <button class=" flex text-gray-500" @click="showForecastModal()">
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path></svg>
+                            <button class="focus-outline-none flex text-gray-500" @click="showForecastModal()">
+                                <svg class="w-6 h-6 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path></svg>
                                 Edit
                             </button>
                         </div>
@@ -68,21 +68,22 @@
                     <div class="bg-gray-50">
                         <div class="flex justify-between p-4">
                             <div>
-                                <a href="/excel/forecast" class="flex">
-                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                <a href="/excel/forecast" target="_blank" class="flex text-gray-400 hover:text-gray-800 duration-200" data-balloon-pos="right" aria-label="Export all approved forecasts to Excel">
+                                    <svg class=" mr-1 w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                                     Export
                                 </a>
                             </div>
-                            <div>
-                                <a href="#" @click.prevent="checkForecastPrograms()"> Check Programs</a>
+                            <div class="flex text-gray-400 hover:text-gray-800 duration-200">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                <a href="#" @click.prevent="checkForecastPrograms()" class=""> Check Programs</a>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Budget -->
-                <div class="bg-white rounded shadow w-full mt-6">
-                    <div class="border-b border-gray-300 px-6 py-4 text-semibold flex justify-between">
+                <div class="bg-white rounded shadow w-full">
+                    <div class="border-b px-6 py-4 text-semibold flex justify-between" :class="(budgetSettings.status == 'open') ? 'border-green-400' : 'border-gray-300'">
                         Budget Status
                         <span v-if="budgetSettings.status == 'open'" class="text-green-500" data-balloon-pos="left" aria-label="Budget Inputs are Open">
                             <svg class="check-circle w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
@@ -97,8 +98,8 @@
                             <strong>Scenario: </strong> <span class="capitalize">{{ budgetSettings.scenario }}</span>
                         </div>
                         <div>
-                            <button class=" flex text-gray-500" @click="showBudgetModal()">
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path></svg>
+                            <button class="focus-outline-none flex text-gray-500" @click="showBudgetModal()">
+                                <svg class="w-6 h-6 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path></svg>
                                 Edit
                             </button>
                         </div>
@@ -106,13 +107,13 @@
                     <div class="bg-gray-50">
                         <div class="flex justify-between p-4">
                             <div>
-                                <a href="/excel/budget" class="flex">
+                                <a href="/excel/budget" class="flex text-gray-400 hover:text-gray-800 duration-200" data-balloon-pos="right" aria-label="Export all budgets to Excel">
                                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                                     Export
                                 </a>
                             </div>
                             <div>
-                                <a href="#" @click.prevent="checkForecastPrograms()"> Check Programs</a>
+                                <!-- <a href="#" @click.prevent="checkForecastPrograms()"> Check Programs</a> -->
                             </div>
                         </div>
                     </div>
@@ -121,12 +122,12 @@
 
 
             <div>
-                <h2 class="mx-6 my-4 text-xl">Merge Data</h2>
-                <div class="flex -mx-3">
+                <h2 class="mt-8 my-4 text-2xl">Merge Data</h2>
+                <div class="flex -mx-3 mt-4">
                     <div v-for="(m, i) in merge" :key="i" class="bg-white shadow rounded px-6 py-6 flex-grow mx-3">
                         <div class="text-center">
                             <a target="_blank" :href="'/' + m.label + '/merge'">
-                                <button type="text" :aria-label="m.tooltip" data-balloon-pos="bottom" class="flex">
+                                <button type="text" :aria-label="m.tooltip" data-balloon-pos="bottom" class="flex text-lg capitalize">
                                     <svg class="mr-2 text-gray-300 w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"></path><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"></path></svg>
                                     {{ m.label }}
                                 </button>
@@ -135,11 +136,11 @@
                     </div>
                 </div>
 
-                <h2 class="mx-6 my-4 text-xl">Check Program Codes</h2>
-                <div class="uk-child-width-expand flex -mx-3">
-                    <div v-for="(c, j) in codes" :key="j" class="flex-grow bg-white mx-3 px-6 py-6">
+                <h2 class="mt-8 my-4 text-2xl">Check Program Codes</h2>
+                <div class="uk-child-width-expand flex -mx-3 mt-4">
+                    <div v-for="(c, j) in codes" :key="j" class="flex-grow bg-white shadow rounded mx-3 px-6 py-6">
                         <div class="text-center">
-                            <button type="text" @click="checkCodes(c)" class="flex">
+                            <button type="text" @click="checkCodes(c)" class="flex text-lg capitalize">
                                 <svg class="mr-2 text-gray-300 w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"></path><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"></path></svg>
                                 {{ c }}
                             </button>
@@ -239,10 +240,18 @@
         <!-- Feedback and Help Modal -->
         <BaseModal v-if="modalVisible" @close="modalVisible = false" scrollable :title="modalTitle">
             <div v-if="modalType == 'forecast'">
-                <ForecastSettings class="my-6" />
+                <ForecastSettings 
+                    class="my-6" 
+                    :settings="forecastSettings"
+                    @saved="getForecastSettings(); modalVisible = false"
+                />
             </div>
             <div v-else>
-                <BudgetSettings class="my-6" />
+                <BudgetSettings 
+                    class="my-6" 
+                    :settings="budgetSettings"
+                    @saved="getBudgetSettings(); modalVisible = false"
+                />
             </div>
             <template v-slot:footer>
                 <!-- <span class="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
@@ -268,6 +277,12 @@ import BudgetSettings from './Budget/Settings'
 
 export default {
     name: 'neXusAdmin',
+
+    metaInfo() {
+        return {
+            title: `neXus Administration`,
+        } 
+    },
     
     components: {
         AppLayout,

@@ -1,60 +1,53 @@
 <template>
-    <div v-show="month && total.monthLeads > 0">
-        <h3 class="uk-text-center">{{ program }} Forecast Totals</h3>
-        
-        <div divided class="uk-child-width-1-2">
-            <div class="uk-text-center">
-                <div>
-                    <div slot="header">
-                        <p class="capitalize range-text uk-margin-remove-bottom">{{ month }} {{ year}}</p>
-                    </div>
-                    <div class="uk-child-width-1-3">
-                        <div v-for="(metric, i) in ['monthLeads', 'monthSpend', 'monthCpl']" :key="i">
-                            <span class="uk-text-muted capitalize">
-                                <!-- <font-awesome-icon :icon="icon(metric)" class="uk-margin-small-right" /> -->
-                                {{ heading(metric) }}
+    <div class="mt-6 grid grid-cols-2 gap-6">
+        <div class="bg-white rounded shadow">
+            <p class="text-center capitalize border-b px-6 py-4 font-semibold text-gray-700 text-lg">{{ month  }} {{ year }}</p>
+            <div class="p-6">
+                <div class="grid grid-cols-3 gap-4">
+                    <div v-for="(metric, i) in ['monthLeads', 'monthSpend', 'monthCpl']" :key="i" class="text-center">
+                        <span class="text-gray-500" :class="(metric != 'cpl') ? 'capitalize' : ''">
+                            <!-- <font-awesome-icon :icon="icon(metric)" class="uk-margin-small-right" /> -->
+                            {{ heading(metric) }}
+                        </span>
+                        <h1 class="text-4xl" :class="(total[metric] != 0) ? 'nexus-blue' : 'text-gray-400'">
+                            {{ prefix(metric) }}{{ total[metric] | commas}}
+                        </h1>
+                        <p class="text-gray-600" @click="comparePercent = ! comparePercent">
+                            <span v-if="comparePercent" data-balloon-pos="right" :aria-label="'Budget: ' + prefix(metric) + parseInt(total[metric + 'Budget']).toLocaleString()" :class="varianceClass(metric)">
+                                {{ percentVariance(metric) | pct0 }}
                             </span>
-                            <h1 class="uk-text-primary uk-margin-remove-top uk-margin-remove-bottom">
-                                {{ prefix(metric) }}{{ total[metric] | commas }}
-                            </h1>
-                            <p class="uk-margin-remove-top" @click="comparePercent = ! comparePercent" data-balloon-pos="down" :aria-label="'Budget: ' + prefix(metric) + parseInt(total[metric + 'Budget']).toLocaleString()">
-                                <span v-if="comparePercent">
-                                    {{ percentVariance(metric) | pct1 }}
-                                </span>
-                                <span v-else>
-                                    {{ varianceText(metric) }}
-                                </span>
-                                <!-- <font-awesome-icon :icon="varianceIcon(metric)" :class="varianceClass(metric)" /> to Budget -->
-                            </p>
-                        </div>
+                            <span v-else data-balloon-pos="right" :aria-label="'Budget: ' + prefix(metric) + parseInt(total[metric + 'Budget']).toLocaleString()" :class="varianceClass(metric)">
+                                {{ varianceText(metric) }}
+                            </span>
+                                to Budget
+                        </p>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="uk-text-center">
-                <div>
-                    <div slot="header">
-                        <p class="range-text uk-margin-remove-bottom">Full Year {{ year }}</p>
-                    </div>
-                    <div class="uk-child-width-1-3">
-                        <div v-for="(metric, i) in ['yearLeads', 'yearSpend', 'yearCpl']" :key="i">
-                            <span class="uk-text-muted capitalize">
-                                <!-- <font-awesome-icon :icon="icon(metric)" class="uk-margin-small-right" /> -->
-                                {{ heading(metric) }}
+        <!-- Full Year -->
+        <div class="bg-white rounded shadow">
+            <p class="text-center capitalize border-b px-6 py-4 font-semibold text-gray-700 text-lg">Full Year {{ year }}</p>
+            <div class="p-6">
+                <div class="grid grid-cols-3 gap-4">
+                    <div v-for="(metric, i) in ['yearLeads', 'yearSpend', 'yearCpl']" :key="i" class="text-center">
+                        <span class="capitalize text-gray-500">
+                            <!-- <font-awesome-icon :icon="icon(metric)" class="uk-margin-small-right" /> -->
+                            {{ heading(metric) }}
+                        </span>
+                        <h1 class="text-4xl nexus-blue">
+                            {{ prefix(metric) }}{{ total[metric] | commas}}
+                        </h1>
+                        <p class="text-gray-600" @click="comparePercent = ! comparePercent" >
+                            <span v-if="comparePercent" data-balloon-pos="right" :aria-label="'Budget: ' + prefix(metric) + parseInt(total[metric + 'Budget']).toLocaleString()">
+                                {{ percentVariance(metric) | pct0 }}
                             </span>
-                            <h1 class="uk-text-primary uk-margin-remove-top uk-margin-remove-bottom">
-                                {{ prefix(metric) }}{{ total[metric] | commas }}
-                            </h1>
-                            <p class="uk-margin-remove-top" @click="comparePercent = ! comparePercent" data-balloon-pos="down" :aria-label="'Budget: ' + prefix(metric) + parseInt(total[metric + 'Budget']).toLocaleString()">
-                                <span v-if="comparePercent">
-                                    {{ percentVariance(metric) | pct1 }}
-                                </span>
-                                <span v-else>
-                                    {{ varianceText(metric) }}
-                                </span>
-                                <!-- <font-awesome-icon :icon="varianceIcon(metric)" :class="varianceClass(metric)" /> to Budget -->
-                            </p>
-                        </div>
+                            <span v-else data-balloon-pos="right" :aria-label="'Budget: ' + prefix(metric) + parseInt(total[metric + 'Budget']).toLocaleString()">
+                                {{ varianceText(metric) }}
+                            </span>
+                            to Budget
+                        </p>
                     </div>
                 </div>
             </div>
@@ -63,9 +56,12 @@
 </template>
 
 <script>
+import MonthsMixin from '../../Mixins/Months'
 
 export default {
     name: 'ForecastProgramTotals',
+
+    mixins: [MonthsMixin],
 
     props: {
         month: {
@@ -198,9 +194,9 @@ export default {
                 return 'uk-text-muted';
             }
             if (metric == 'leads' || metric == 'monthLeads') {
-                return (delta > 0) ? 'uk-text-success' : 'uk-text-danger';
+                return (delta > 0) ? 'text-green-500' : 'text-red-500';
             } else {
-                return (delta > 0) ? 'uk-text-danger' : 'uk-text-success';
+                return (delta > 0) ? 'text-red-500' : 'text-green-500';
             }
         }
     },

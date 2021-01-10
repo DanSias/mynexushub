@@ -9,10 +9,18 @@
         <div>
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
                 <update-profile-information-form
-                            :name="$page.user.name"
-                            :email="$page.user.email" />
+                    :name="$page.user.name"
+                    :email="$page.user.email" 
+                />
 
                 <jet-section-border />
+                
+                <update-focus-form 
+                    :email="$page.user.email" 
+                />
+
+                <jet-section-border />
+
 
                 <update-password-form class="mt-10 sm:mt-0" />
 
@@ -42,6 +50,7 @@
     import TwoFactorAuthenticationForm from './TwoFactorAuthenticationForm'
     import UpdatePasswordForm from './UpdatePasswordForm'
     import UpdateProfileInformationForm from './UpdateProfileInformationForm'
+    import UpdateFocusForm from './UpdateFocusForm'
 
     export default {
         props: ['sessions'],
@@ -54,6 +63,7 @@
             TwoFactorAuthenticationForm,
             UpdatePasswordForm,
             UpdateProfileInformationForm,
+            UpdateFocusForm
         },
     }
 </script>

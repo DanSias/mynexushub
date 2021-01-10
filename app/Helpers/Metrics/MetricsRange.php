@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Classes\Metrics;
+namespace App\Helpers\Metrics;
 
 use DB;
-use App\Classes\Range;
-use App\Classes\Filter;
-use App\Classes\Time;
-use App\Classes\Metrics\Utilities;
+use App\Helpers\Range;
+use App\Helpers\Filter;
+use App\Helpers\Time;
+use App\Helpers\Metrics\Utilities;
 
 // use App\CVRS;
-// use App\Classes\Program\Details;
+// use App\Helpers\Program\Details;
 
 // Performance Metrics
 class MetricsRange

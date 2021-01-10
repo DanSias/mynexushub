@@ -7,6 +7,7 @@
         :close-on-select="true"
         :placeholder="placeholder" 
         selectLabel=">" 
+        :maxHeight="max"
         deselectLabel="x">
     </multiselect>
 </template>
@@ -32,12 +33,26 @@ export default {
         placeholder: {
             type: String,
             default: 'Business Unit'
-        }
+        },
+        max: {
+            type: Number,
+            default: 300
+        },
+        filter: {
+            type: [Object],
+            default: () => {}
+        },
     },
     
     data() {
         return {
             options: []
+        }
+    },
+
+    computed: {
+        location() {
+            return (this.filter && this.filter.location) ? this.filter.location : ''
         }
     },
 
@@ -47,8 +62,18 @@ export default {
         },
         getOptions() {
             axios
-                .get('/data/programs/list/bu')
+                .get('/data/programs/list/bu', {
+                    params: {
+                        filter: this.filter
+                    }
+                })
                 .then(({data}) => this.options = data)
+        }
+    },
+
+    watch: {
+        location() {
+            this.getOptions()
         }
     },
 

@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use App\Models\Setting;
 
 use App\Helpers\Filter;
 use App\Helpers\Time;
 
+use App\Helpers\Metrics\Utilities;
 use App\Helpers\Metrics\MetricsSum;
 use App\Helpers\Metrics\MetricsRange;
 use App\Helpers\Metrics\PipelineSum;
@@ -32,6 +34,26 @@ class DataController extends Controller
                 'type' => $type,
                 'currentUser' => auth()->user()
             ]);
+    }
+
+    public function report($type = '')
+    {
+        return Inertia::render('Reporting', 
+            [
+                'reportType' => $type,
+                'currentUser' => auth()->user()
+            ]);
+    }
+
+    // Input Status
+    public function inputs()
+    {
+        $array = [];
+        $status = Setting::where('key', 'status')->get();
+        foreach ($status as $s) {
+            $array[$s->type] = $s->value;
+        }
+        return $array;
     }
     
     // Inertia Pages
@@ -177,5 +199,11 @@ class DataController extends Controller
         $data = $profit->profitability();
 
         return json_encode($data);
+    }
+
+    public function channelInitiatives($channel = '')
+    {
+        $util = new Utilities;
+        return $util->channelInitiatives($channel);
     }
 }

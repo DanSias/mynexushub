@@ -278,4 +278,33 @@ class DeadlineController extends Controller
             ->get();
         return $conversionTerms;
     }
+
+
+    // Merge deadlines from raw CSV file (deadlines_raw DB table)
+    public function merge()
+    {
+        $time = new Time;
+        $year = $time->getYear();
+
+        $raw = DB::table('deadlines_raw')
+            ->where('year', '>=', $year)
+            ->get(['code', 'year', 'term', 'app', 'cf', 'start', 'reg', 'drop']);
+        
+        foreach ($raw as $dl) {
+            $dl = $this->checkDates($dl);
+            $check['program'] = $dl->code;
+            $check['year'] = $dl->year;
+            $check['term'] = $dl->term;
+
+            $set = $check;
+            $set['app'] = $dl->app;
+            $set['cf'] = $dl->cf;
+            $set['start'] = $dl->start;
+            $set['reg'] = $dl->reg;
+            $set['drop'] = $dl->drop;
+
+            $up = Deadline::updateOrCreate($check, $set);
+        }
+        return $raw;
+    }
 }

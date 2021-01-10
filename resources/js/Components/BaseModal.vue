@@ -12,7 +12,7 @@
         </div>
 
         <div
-          class="z-10 bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full max-w-4xl"
+          class="z-10 bg-white rounded-lg overflow-scroll shadow-xl transform transition-all sm:w-full max-w-4xl max-h-full"
           role="dialog"
           aria-modal="true"
           aria-labelledby="modal-headline"
@@ -26,7 +26,7 @@
                     id="modal-headline"
                   >{{ title }}</h3>
                   <button @click.prevent="handleClose">
-                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                    <svg class="h-5 w-5 text-gray-400 hover:text-gray-800 duration-200" fill="currentColor" viewBox="0 0 20 20">
                       <path
                         fill-rule="evenodd"
                         d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
@@ -41,7 +41,7 @@
               </div>
             </div>
           </div>
-          <div class="bg-gray-50 px-4 py-6 sm:px-6 sm:flex sm:flex-row-reverse">
+          <div v-if="showFooter" class="bg-gray-50 px-4 py-6 sm:px-6 sm:flex sm:flex-row-reverse">
             <slot name="footer"></slot>
             <span class="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
               <button
@@ -69,6 +69,10 @@ export default {
             type: Boolean,
             default: false,
         },
+        showFooter: {
+            type: Boolean,
+            default: true
+        }
     },
     created() {
         document.addEventListener("keyup", this.onClose);

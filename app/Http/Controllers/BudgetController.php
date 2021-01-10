@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use Illuminate\Http\Request;
 
 use App\Models\Setting;
@@ -46,6 +47,31 @@ class BudgetController extends Controller
     }
 
 
+    // Save Settings
+    public function saveSettings(Request $request)
+    {
+        $type = 'budget';
+        $settings = $request->input('settings');
+        $returnArray = [];
+
+        $user = Auth::user();
+        $id = $user->id;
+
+        foreach ($settings as $key => $value) {
+            $array = [];
+            $array['type'] = $type;
+            $array['key'] = $key;
+            $array['value'] = $value;
+            $array['user_id'] = $id;
+
+            $check['type'] = $type;
+            $check['key'] = $key;
+            $save = Setting::updateOrCreate($check, $array);
+            // array_push($returnArray, $save);
+        }
+        $current = Setting::where('type', 'budget')->get();
+        return $current;
+    }
 
 
     public function expected()
